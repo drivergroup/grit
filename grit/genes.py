@@ -49,7 +49,8 @@ from .files.reads import MergedReads, RNAseqReads, CAGEReads, \
     RAMPAGEReads, PolyAReads, \
     fix_chrm_name_for_ucsc, get_contigs_and_lens, calc_frag_len_from_read_data, \
     iter_paired_reads, extract_jns_and_reads_in_region, TooManyReadsError
-from . import files.junctions
+
+import .files as files
 
 from .files.bed import create_bed_line
 
