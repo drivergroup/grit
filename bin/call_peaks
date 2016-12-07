@@ -40,7 +40,7 @@ from grit import peaks
 import grit
 
 import multiprocessing
-import Queue
+import queue
 
 BED_ofp = None
 
@@ -153,7 +153,7 @@ def process_genes(
     num_genes = genes_queue.qsize()
     while True:
         try: gene = genes_queue.get(timeout=1.0)
-        except Queue.Empty: break
+        except queue.Empty: break
         
         if config.VERBOSE: config.log_statement(
                 "Processing %s (%i\tremain)" % (
@@ -374,13 +374,13 @@ def parse_arguments():
         assert False, "Unrecognized outfname_type '%s'" % args.outfname_type
     
     track_header = "track name=%s type=%s" % (track_name, args.outfname_type)
-    print >> output_stream, track_header
+    print(track_header, file=output_stream)
     
     global BED_ofp
     if args.bed_peaks_ofname != None:
         BED_ofp = ProcessSafeOPStream(open(args.bed_peaks_ofname, "w"))
         track_header = "track name=%s" % track_name
-        print >> BED_ofp, track_header
+        print(track_header, file=BED_ofp)
         
     
 
@@ -429,7 +429,7 @@ def main():
         # if we are supposed to use the annotation genes
         gene_segments = []
         if ref_elements_to_include.genes == True:
-            for contig, contig_len in contig_lens.iteritems():
+            for contig, contig_len in contig_lens.items():
                 for strand in '+-':
                     contig_gene_bndry_bins = load_gene_bndry_bins(
                         ref_genes, contig, strand, contig_len)

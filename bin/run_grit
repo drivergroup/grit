@@ -24,7 +24,7 @@ import subprocess
 from collections import defaultdict, namedtuple
 from itertools import chain
 import sqlite3
-import cPickle as pickle
+import pickle as pickle
 
 from grit.files.gtf import load_gtf
 from grit.files.reads import (
@@ -73,8 +73,8 @@ def convert_elements_to_arrays(all_elements):
     # convert into array
     all_array_elements = defaultdict( 
         lambda: defaultdict(lambda: numpy.zeros(0)) )
-    for key, elements in all_elements.iteritems():
-        for element_type, contig_elements in elements.iteritems():
+    for key, elements in all_elements.items():
+        for element_type, contig_elements in elements.items():
             all_array_elements[key][element_type] \
                 = numpy.array( sorted( contig_elements ) )
 
@@ -95,7 +95,7 @@ def load_elements( fp ):
 def extract_elements_from_genes( genes ):
     all_elements = defaultdict( lambda: defaultdict(set) )
     for gene in genes:
-        for key, val in gene.extract_elements().iteritems():
+        for key, val in gene.extract_elements().items():
             all_elements[(gene.chrm, gene.strand)][key].update(val)
 
     
@@ -103,7 +103,7 @@ def extract_elements_from_genes( genes ):
 
 def run_bam2wig(fname, op_prefix, assay, region,
                 nthreads, reverse_read_strand, verbose):
-    print >> sys.stderr, "Building bedgraph for %s" % fname
+    print("Building bedgraph for %s" % fname, file=sys.stderr)
     assert assay in ["rnaseq", "cage", "rampage", "polya"], \
         "Unrecognized assay '%s'" % assay
     command = ["python", os.path.join(os.path.dirname(__file__), "bam2wig.py" )]
@@ -169,17 +169,17 @@ class Samples(object):
     
     def verify_args_are_sufficient(self, rnaseq_reads, promoter_reads, polya_reads):
         if len(rnaseq_reads) == 0:
-            raise ValueError, "RNAseq reads must be provided for each sample"
+            raise ValueError("RNAseq reads must be provided for each sample")
         
         if ( len(promoter_reads) == 0
              and not self.args.use_reference_tss_exons
              and not self.args.use_reference_promoters):
-            raise ValueError, "Either (cage reads or rampage reads) must be provided for each sample or (--use-reference-tss-exons or --use-reference-promoters) must be set"
+            raise ValueError("Either (cage reads or rampage reads) must be provided for each sample or (--use-reference-tss-exons or --use-reference-promoters) must be set")
         
         if ( len(polya_reads) == 0
              and not self.args.use_reference_tes_exons
              and not self.args.use_reference_polyas ):
-            raise ValueError, "Either polya-reads must be provided or (--use-reference-tes-exons or --use-reference-polyas) must be set"
+            raise ValueError("Either polya-reads must be provided or (--use-reference-tes-exons or --use-reference-polyas) must be set")
         
         return
     
@@ -223,7 +223,7 @@ class Samples(object):
         # reference genome
         if any(x.read_type == 'auto' for x in self.control_entries):
             if args.reference == None:
-                raise ValueError, "One of the read_type entries is set to 'auto' but a reference was not provided"
+                raise ValueError( "One of the read_type entries is set to 'auto' but a reference was not provided")
             if config.VERBOSE: config.log_statement("Loading annotation file.")
             self.ref_genes = load_gtf( args.reference )
         
@@ -273,7 +273,7 @@ class Samples(object):
             with open(sample_type + ".fldist.obj") as fl_dists_fp:
                 fl_dists = pickle.load( fl_dists_fp )
         except:
-            print "CANT OPEN %s" % sample_type + ".fldist.obj"
+            print("CANT OPEN %s" % sample_type + ".fldist.obj")
             fl_dists = None
 
         all_reads = []
@@ -374,7 +374,7 @@ class Samples(object):
                         for rep_reads in reads:
                             rep_reads.num_reads = read_cnts
         except IOError:
-            print "CANT OPEN %s" % sample_type + ".read_cnts.obj"
+            print("CANT OPEN %s" % sample_type + ".read_cnts.obj")
             pass
         
         if verify_args:
@@ -398,20 +398,20 @@ class Samples(object):
 
 def load_ref_elements_to_include(args):
     if None == args.reference and args.use_reference_genes:
-        raise ValueError, "--reference must be set if --use-reference-genes is set"
+        raise ValueError("--reference must be set if --use-reference-genes is set")
     if None == args.reference and (
             args.use_reference_junctions or args.only_use_reference_junctions):
-        raise ValueError, "--reference must be set if --only_use-reference-junctions is set"
+        raise ValueError( "--reference must be set if --only_use-reference-junctions is set")
     if None == args.reference and args.use_reference_tss_exons:
-        raise ValueError, "--reference must be set if --use-reference-tss is set"
+        raise ValueError( "--reference must be set if --use-reference-tss is set")
     if None == args.reference and args.use_reference_tes_exons:
-        raise ValueError, "--reference must be set if --use-reference-tes is set"
+        raise ValueError( "--reference must be set if --use-reference-tes is set")
     if None == args.reference and args.use_reference_promoters:
-        raise ValueError, "--reference must be set if --use-reference-promoters is set"
+        raise ValueError( "--reference must be set if --use-reference-promoters is set")
     if None == args.reference and args.use_reference_polyas:
-        raise ValueError, "--reference must be set if --use-reference-polyas is set"
+        raise ValueError( "--reference must be set if --use-reference-polyas is set")
     if None == args.reference and args.use_reference_exons:
-        raise ValueError, "--reference must be set if --use-reference-exons is set"
+        raise ValueError( "--reference must be set if --use-reference-exons is set")
     return RefElementsToInclude( args.use_reference_genes, 
                                  ( args.use_reference_junctions 
                                    or args.only_use_reference_junctions),
@@ -556,7 +556,7 @@ def parse_arguments():
     args = parser.parse_args()
     if None == args.control and None == args.rnaseq_reads and \
             False == args.only_build_candidate_transcripts:
-        raise ValueError, "--control or --rnaseq-reads must be set"
+        raise ValueError( "--control or --rnaseq-reads must be set")
 
     config.MAX_NUM_CANDIDATE_TRANSCRIPTS = \
         args.max_num_candidate_transcripts    
@@ -619,15 +619,15 @@ def parse_arguments():
 
     if ( args.dont_estimate_confidence_bounds
          and args.dont_estimate_upper_confidence_bounds ):
-        raise ValueError, "It doesn't make sense to set --dont-estimate-confidence-bounds and --dont-estimate-upper-confidence-bounds"
+        raise ValueError("It doesn't make sense to set --dont-estimate-confidence-bounds and --dont-estimate-upper-confidence-bounds")
     
     if (args.only_build_candidate_transcripts and 
             args.dont_estimate_upper_confidence_bounds):
-        raise ValueError, "--only-build-candidate-transcripts implies --dont-estimate-confidence-upper-bounds (don't set both)"        
+        raise ValueError("--only-build-candidate-transcripts implies --dont-estimate-confidence-upper-bounds (don't set both)")        
 
     if (args.only_build_candidate_transcripts and 
             args.dont_estimate_confidence_bounds):
-        raise ValueError, "--only-build-candidate-transcripts implies --dont-estimate-confidence-upper-bounds (don't set both)"        
+        raise ValueError("--only-build-candidate-transcripts implies --dont-estimate-confidence-upper-bounds (don't set both)")        
 
     config.ESTIMATE_UPPER_CONFIDENCE_BOUNDS = True
     config.ESTIMATE_LOWER_CONFIDENCE_BOUNDS = True
@@ -648,7 +648,7 @@ def parse_arguments():
         os.mkdir(config.tmp_dir)
     except OSError:
         if not args.continue_run:
-            raise OSError, "Directory '%s' already exists: either remove it, change the --output-dir option, or use the --continue-run option" % args.output_dir
+            raise OSError("Directory '%s' already exists: either remove it, change the --output-dir option, or use the --continue-run option" % args.output_dir)
     os.chdir(args.output_dir)
     
     log_ofstream = open( "log.txt", "a" )
@@ -698,7 +698,7 @@ class discover_elements(dict):
             rnaseq_reads.fl_dists = fl_dists
 
             # set the fl dists, and read counts
-            print all_read_cnts
+            print(all_read_cnts)
             with open(str(sample_type) + ".read_cnts.obj", "w") as read_cnts_ofp:
                 pickle.dump( all_read_cnts, read_cnts_ofp)
             for read_cnts, reads in zip(
@@ -730,7 +730,7 @@ class discover_elements(dict):
         return
     
     def iteritems(self):
-        for sample_type in self.keys():
+        for sample_type in list(self.keys()):
             if self[sample_type] == None:
                 self[sample_type] = self._build_elements(sample_type)
             yield sample_type, self[sample_type]
@@ -757,13 +757,13 @@ def main():
         assert args.elements == None, "It doesn't make sense to set --GTF and --elements - did you mean to set --reference instead of --GTF?"
         sample_types = sample_data.get_sample_types()
         if len(sample_types) != 1: 
-            raise ValueError, "Can not provide --elements and data from multiple sample types."
+            raise ValueError("Can not provide --elements and data from multiple sample types.")
         elements = {sample_types[0]: (None, args.GTF)}
     elif args.elements !=  None:
         assert not args.only_build_elements
         sample_types = sample_data.get_sample_types()
         if len(sample_types) > 1: 
-            raise ValueError, "Can not provide --elements and data from multiple sample types."
+            raise ValueError("Can not provide --elements and data from multiple sample types.")
         elif len(sample_types) == 1:
             sample_type = sample_types[0]
         elif len(sample_types) == 0:
@@ -774,7 +774,7 @@ def main():
     
     # build transcripts for each sample
     sample_type_and_pickled_gene_fnames = []
-    for sample_type, (elements_fp, gtf_fp) in elements.iteritems():
+    for sample_type, (elements_fp, gtf_fp) in elements.items():
         # if we are only building elements, then we still need to 
         # loop through the samples because they are built lazily, 
         # but we dont need to do anything else
@@ -856,7 +856,7 @@ def main():
     gtf_ofp.close()
     
     if config.ONLY_BUILD_CANDIDATE_TRANSCRIPTS: return
-    for sample_type in elements.keys():
+    for sample_type in list(elements.keys()):
         rep_ids = sample_data.get_rep_ids(sample_type)
         # if we are running from the command line, there wont be rep ids,
         # so initialize this to none

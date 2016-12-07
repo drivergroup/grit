@@ -104,7 +104,7 @@ def fork_and_wait(n_proc, target, args=[]):
         return
     else:
         pids = []
-        for i in xrange(n_proc):
+        for i in range(n_proc):
             pid = os.fork()
             if pid == 0:
                 try:
@@ -123,8 +123,8 @@ def fork_and_wait(n_proc, target, args=[]):
                 if ret_pid in pids:
                     pids.remove(ret_pid)
                 if error_code != os.EX_OK: 
-                    raise OSError, "Process '{}' returned error code '{}'".format(
-                        ret_pid, error_code) 
+                    raise OSError("Process '{}' returned error code '{}'".format(
+                        ret_pid, error_code))
         except KeyboardInterrupt:
             for pid in pids:
                 try: os.kill(pid, signal.SIGHUP)
