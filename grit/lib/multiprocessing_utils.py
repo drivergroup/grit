@@ -24,9 +24,11 @@ import signal
 import multiprocessing
 import traceback
 
+from io import FileIO
+
 from grit import config
 
-class Counter(object):
+class Counter:
     def __init__(self, initval=0):
         self.val = multiprocessing.Value('i', initval)
         self.lock = multiprocessing.Lock()
@@ -37,7 +39,7 @@ class Counter(object):
             self.val.value += 1
         return rv
 
-class ThreadSafeFile( file ):
+class ThreadSafeFile(FileIO):
     def __init__( *args ):
         file.__init__( *args )
         args[0].lock = multiprocessing.Lock()
@@ -47,7 +49,7 @@ class ThreadSafeFile( file ):
             file.write( self, string )
             self.flush()
 
-class ProcessSafeOPStream( object ):
+class ProcessSafeOPStream:
     def __init__( self, writeable_obj ):
         self.writeable_obj = writeable_obj
         self.lock = multiprocessing.Lock()
@@ -64,7 +66,7 @@ class ProcessSafeOPStream( object ):
     def close( self ):
         self.writeable_obj.close()
 
-class Pool(object):
+class Pool:
     """A working version of the multiprocessing's Pool.
     
     """
@@ -124,7 +126,7 @@ def fork_and_wait(n_proc, target, args=[]):
                     pids.remove(ret_pid)
                 if error_code != os.EX_OK: 
                     raise OSError("Process '{}' returned error code '{}'".format(
-                        ret_pid, error_code))
+                        ret_pid, error_code)) 
         except KeyboardInterrupt:
             for pid in pids:
                 try: os.kill(pid, signal.SIGHUP)

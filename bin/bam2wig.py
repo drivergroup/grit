@@ -189,7 +189,7 @@ def parse_arguments():
     read_filter = int(args.read_filter) if args.read_filter != None else None
     
     if args.assay not in allowed_assays:
-        raise ValueError( "Unrecongized assay (%s)" % args.assay)
+        raise ValueError("Unrecongized assay (%s)" % args.assay)
     
     region = args.region
     if region != None:
@@ -266,7 +266,7 @@ def main():
             subprocess.check_call(["which", "bedGraphToBigWig"], stdout=None)
         except subprocess.CalledProcessError:
             raise ValueError("bedGraphToBigWig does not exist on $PATH. " + \
-                "You can still build a bedGraph by removing the --bigwig(-b) option.")
+                "You can still build a bedGraph by removing the --bigwig(-b) option.")        
     
     # Open the output files
     if stranded:
