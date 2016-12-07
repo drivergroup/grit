@@ -25,7 +25,7 @@ import pickle as pickle
 from itertools import chain
 from collections import namedtuple, defaultdict
 
-import .files as files
+from . import files 
 from . import config
 
 GenomicInterval = namedtuple('GenomicInterval', 
