@@ -348,7 +348,7 @@ def load_gtf(fname_or_fp, contig=None, strand=None):
         try:
             gene = _load_gene_from_gtf_lines(
                 gene_id, gene_lines, transcripts_data)
-        except Exception, inst:
+        except Exception as inst:
             log_statement( 
                 "ERROR : Could not load '%s': %s" % (gene_id, inst), log=True)
             #log_statement( traceback.format_exc(), log=True )
@@ -425,7 +425,7 @@ def load_next_gene_from_gtf(fp, contig=None, strand=None,
             gene_id, gene_lines, transcripts_lines)
         for t in gene.transcripts:
             set_expression_data(t)
-    except Exception, inst:
+    except Exception as inst:
         log_statement( 
             "ERROR : Could not load '%s': %s" % (gene_id, inst), log=True)
         log_statement( traceback.format_exc(), log=True )

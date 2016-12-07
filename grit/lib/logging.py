@@ -67,9 +67,9 @@ def manage_curses_display(stdscr, msg_queue, msg_queue_lock, nthreads=1):
             # to refresh and sleep
             try:
                 thread_index, do_log, msg = msg_queue.pop()
-            except IndexError, inst:
+            except IndexError as inst:
                 break
-            except IOError, inst:
+            except IOError as inst:
                 break
             
             # if the message is BREAK, then we are done so exit the thread

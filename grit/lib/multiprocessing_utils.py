@@ -111,7 +111,7 @@ def fork_and_wait(n_proc, target, args=[]):
                     signal.signal(signal.SIGINT, handle_interrupt_signal)
                     target(*args)
                     os._exit(os.EX_OK)
-                except Exception, inst:
+                except Exception as inst:
                     config.log_statement( "Uncaught exception in subprocess\n" 
                                           + traceback.format_exc(), log=True)
                     os._exit(os.EX_SOFTWARE)

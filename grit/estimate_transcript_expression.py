@@ -293,7 +293,7 @@ def find_confidence_bounds_in_gene( gene, num_reads_in_bams,
             p_value, bnd = frequency_estimation.estimate_confidence_bound( 
                 f_mat, num_reads_in_bams,
                 exp_mat_row, mle_estimate, bnd_type, cb_alpha )
-        except Exception, inst:
+        except Exception as inst:
             p_value = 1.
             bnd = 0.0 if bnd_type == 'lb' else 1.0
             error_msg = "%i: Skipping %s (%s:%s:%i-%i): %s" % (
@@ -397,7 +397,7 @@ def find_confidence_bounds_worker(
             
             if config.VERBOSE:
                 config.log_statement("Finished processing '%s'" % gene.id)
-        except Exception, inst:
+        except Exception as inst:
             config.log_statement( traceback.format_exc(), log=True )
     
     config.log_statement("")
@@ -432,7 +432,7 @@ def estimate_confidence_bounds( data, bnd_type ):
                     find_confidence_bounds_worker(
                         data, gene_ids, 
                         trans_index_cntrs, bnd_type)
-                except Exception, inst:
+                except Exception as inst:
                     config.log_statement( traceback.format_exc(), log=True )
                 finally:
                     os._exit(0)
@@ -477,7 +477,7 @@ def estimate_mle_worker( gene_ids, data ):
                 continue
             mle = frequency_estimation.estimate_transcript_frequencies( 
                 observed_array, expected_array)
-        except Exception, inst:
+        except Exception as inst:
             error_msg = "%i: Skipping %s (%s:%s:%i-%i): %s" % (
                 os.getpid(), gene.id, 
                 gene.chrm, gene.strand, gene.start, gene.stop, inst)
@@ -515,7 +515,7 @@ def estimate_mles( data ):
             if pid == 0:
                 try:
                     estimate_mle_worker(*args)
-                except Exception, inst:
+                except Exception as inst:
                     config.log_statement( str(error_msg), log=True )
                     config.log_statement( traceback.format_exc(), log=True )
                 finally:
@@ -572,7 +572,7 @@ def build_design_matrices_worker( gene_ids,
                 config.log_statement(
                     "No observable transcripts for '%s'" % gene_id, log=True)
             continue
-        except Exception, inst:
+        except Exception as inst:
             error_msg = "%i: Skipping %s: %s" % (
                 os.getpid(), gene_id, inst )
             config.log_statement( 
@@ -604,7 +604,7 @@ def build_design_matrices( data, fl_dists,
             if pid == 0:
                 try:
                     build_design_matrices_worker(*args)
-                except Exception, inst:
+                except Exception as inst:
                     config.log_statement( str(error_msg), log=True )
                     config.log_statement( traceback.format_exc(), log=True )
                 finally:
@@ -684,7 +684,7 @@ def write_data_to_tracking_file(data, fl_dists, ofp):
         try: 
             lines = build_gene_lines_for_tracking_file(
                 gene_id, data, num_reads_in_bams, fl_dists)
-        except Exception, inst:
+        except Exception as inst:
             config.log_statement("Skipping '%s': %s" % (gene_id, str(inst)))
             config.log_statement( traceback.format_exc(), log=True )
         else:

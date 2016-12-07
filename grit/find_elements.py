@@ -1118,7 +1118,7 @@ def find_exons_worker( (genes_queue, genes_queue_lock, n_threads_running),
             rv = find_exons_in_gene(gene, contig_lens, ofp,
                                     ref_elements, ref_elements_to_include,
                                     rnaseq_reads, cage_reads, polya_reads )
-        except Exception, inst:
+        except Exception as inst:
             config.log_statement( 
                 "Uncaught exception in find_exons_in_gene", log=True )
             config.log_statement( traceback.format_exc(), log=True, display=False )
@@ -1260,7 +1260,7 @@ def find_elements( promoter_reads, rnaseq_reads, polya_reads,
                     rnaseq_reads, promoter_reads, polya_reads,
                     ref_genes, ref_elements_to_include, 
                     junctions=None, nthreads=config.NTHREADS )            
-    except Exception, inst:
+    except Exception as inst:
         config.log_statement( "FATAL ERROR", log=True )
         config.log_statement( traceback.format_exc(), log=True, display=False )
         ofp.close()

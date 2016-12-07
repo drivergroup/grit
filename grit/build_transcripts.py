@@ -344,7 +344,7 @@ def build_and_write_gene(gene_elements, output,
                 start, stop), 
             log=True)
         return
-    except Exception, inst:
+    except Exception as inst:
         config.log_statement(
             "ERROR building transcript in %s(%s:%s:%i-%i): %s" % (
                 gene_elements.id, gene_elements.chrm, gene_elements.strand, 
